@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block titulo %}Profissionais{% endblock %}
+{% block conteudo %}
+<div class="cabecalho"><h1>Profissionais</h1>
+  {% if g.usuario.is_admin() %}<a class="btn" href="{{ url_for('profissional_form') }}">+ Novo profissional</a>{% endif %}</div>
+<table>
+  <thead><tr><th>Nome</th><th>Registro</th><th>Especialidade</th><th>Contato</th><th>Situação</th>{% if g.usuario.is_admin() %}<th></th>{% endif %}</tr></thead>
+  <tbody>
+  {% for p in profissionais %}
+    <tr><td>{{ p.nome }}</td><td>{{ p.registro }}</td><td>{{ p.especialidade }}</td>
+      <td>{{ p.telefone }}<br><small>{{ p.email }}</small></td>
+      <td>{{ '✔ Ativo' if p.ativo else '✖ Inativo' }}</td>
+      {% if g.usuario.is_admin() %}
+      <td class="acoes"><a href="{{ url_for('profissional_form', id=p.id) }}">Editar</a>
+        <form method="post" action="{{ url_for('profissional_excluir', id=p.id) }}" onsubmit="return confirm('Excluir {{ p.nome }}?')">
+          <input type="hidden" name="csrf" value="{{ csrf }}"><button class="link perigo">Excluir</button></form></td>
+      {% endif %}</tr>
+  {% else %}
+    <tr><td colspan="6" class="vazio">Nenhum profissional cadastrado.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

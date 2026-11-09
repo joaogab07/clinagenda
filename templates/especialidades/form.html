@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block titulo %}{{ 'Editar' if id else 'Nova' }} especialidade{% endblock %}
+{% block conteudo %}
+<h1>{{ 'Editar' if id else 'Nova' }} especialidade</h1>
+<form class="cartao formulario" method="post">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label>Nome* <input name="nome" value="{{ e.nome if e else '' }}" required></label>
+  <label>Descrição <textarea name="descricao" rows="3">{{ e.descricao if e and e.descricao else '' }}</textarea></label>
+  <div class="botoes"><button class="btn">Salvar</button>
+    <a class="btn secundario" href="{{ url_for('especialidades') }}">Voltar</a></div>
+</form>
+{% endblock %}

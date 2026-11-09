@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titulo %}{{ 'Editar' if id else 'Novo' }} profissional{% endblock %}
+{% block conteudo %}
+<h1>{{ 'Editar' if id else 'Novo' }} profissional</h1>
+<form class="cartao formulario" method="post">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label>Nome* <input name="nome" value="{{ p.nome if p else '' }}" required></label>
+  <div class="linha">
+    <label>Registro (CRM, CRO...)* <input name="registro" value="{{ p.registro if p else '' }}" required></label>
+    <label>Especialidade*
+      <select name="especialidade_id" required>
+        <option value="">Selecione...</option>
+        {% for e in especialidades %}
+        <option value="{{ e.id }}" {% if p and p.especialidade_id|string == e.id|string %}selected{% endif %}>{{ e.nome }}</option>
+        {% endfor %}
+      </select></label>
+  </div>
+  <div class="linha">
+    <label>Telefone <input name="telefone" value="{{ p.telefone if p else '' }}"></label>
+    <label>E-mail <input type="email" name="email" value="{{ p.email if p else '' }}"></label>
+  </div>
+  <label class="check"><input type="checkbox" name="ativo" value="1" {% if not p or p.ativo|string in ('1', 'True') %}checked{% endif %}> Profissional ativo (aparece no agendamento)</label>
+  <div class="botoes"><button class="btn">Salvar</button>
+    <a class="btn secundario" href="{{ url_for('profissionais') }}">Voltar</a></div>
+</form>
+{% endblock %}

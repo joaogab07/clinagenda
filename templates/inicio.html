@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% from "_tabela_consultas.html" import tabela with context %}
+{% block titulo %}Início{% endblock %}
+{% block conteudo %}
+<div class="cabecalho"><h1>Olá, {{ g.usuario.nome }}</h1>
+  <a class="btn" href="{{ url_for('consulta_form') }}">+ Agendar consulta</a></div>
+<div class="totais">
+  <div class="cartao"><strong>{{ totais.paciente }}</strong>pacientes</div>
+  <div class="cartao"><strong>{{ totais.profissional }}</strong>profissionais</div>
+  <div class="cartao"><strong>{{ totais.consulta }}</strong>consultas registradas</div>
+</div>
+<h2>Agenda de hoje</h2>
+{{ tabela(consultas) }}
+{% endblock %}

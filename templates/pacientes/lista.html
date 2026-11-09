@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block titulo %}Pacientes{% endblock %}
+{% block conteudo %}
+<div class="cabecalho"><h1>Pacientes</h1>
+  <a class="btn" href="{{ url_for('paciente_form') }}">+ Novo paciente</a></div>
+<form class="filtros" method="get">
+  <input name="q" value="{{ busca }}" placeholder="Buscar por nome ou CPF">
+  <button class="btn secundario">Buscar</button>
+</form>
+<table>
+  <thead><tr><th>Nome</th><th>CPF</th><th>Nascimento</th><th>Telefone</th><th></th></tr></thead>
+  <tbody>
+  {% for p in pacientes %}
+    <tr><td>{{ p.nome }}</td><td>{{ formatar_cpf(p.cpf) }}</td><td>{{ p.data_nascimento|dt }}</td><td>{{ p.telefone }}</td>
+      <td class="acoes"><a href="{{ url_for('paciente_form', id=p.id) }}">Editar</a>
+        <form method="post" action="{{ url_for('paciente_excluir', id=p.id) }}" onsubmit="return confirm('Excluir {{ p.nome }}?')">
+          <input type="hidden" name="csrf" value="{{ csrf }}"><button class="link perigo">Excluir</button></form></td></tr>
+  {% else %}
+    <tr><td colspan="5" class="vazio">Nenhum paciente cadastrado.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

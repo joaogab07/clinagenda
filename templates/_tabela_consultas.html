@@ -1,0 +1,31 @@
+{% macro tabela(consultas, acoes=true) %}
+<table>
+  <thead><tr><th>Data e hora</th><th>Paciente</th><th>Profissional</th><th>Duração</th><th>Status</th>{% if acoes %}<th></th>{% endif %}</tr></thead>
+  <tbody>
+  {% for c in consultas %}
+    <tr>
+      <td>{{ c.data_hora|dt }}</td>
+      <td>{{ c.paciente }}</td>
+      <td>{{ c.profissional }}<br><small>{{ c.especialidade }}</small></td>
+      <td>{{ c.duracao_min }} min</td>
+      <td><span class="status {{ c.status }}">{{ {'agendada':'◷ Agendada','realizada':'✔ Realizada','cancelada':'✖ Cancelada'}[c.status] }}</span></td>
+      {% if acoes %}
+      <td class="acoes">
+        <a href="{{ url_for('consulta_form', id=c.id) }}">Editar</a>
+        {% if c.status == 'agendada' %}
+        <form method="post" action="{{ url_for('consulta_cancelar', id=c.id) }}" onsubmit="return confirm('Cancelar esta consulta?')">
+          <input type="hidden" name="csrf" value="{{ csrf }}"><button class="link">Cancelar</button></form>
+        {% endif %}
+        {% if g.usuario.is_admin() %}
+        <form method="post" action="{{ url_for('consulta_excluir', id=c.id) }}" onsubmit="return confirm('Excluir definitivamente?')">
+          <input type="hidden" name="csrf" value="{{ csrf }}"><button class="link perigo">Excluir</button></form>
+        {% endif %}
+      </td>
+      {% endif %}
+    </tr>
+  {% else %}
+    <tr><td colspan="6" class="vazio">Nenhuma consulta encontrada.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endmacro %}

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}ClinAgenda{% endblock %} · ClinAgenda</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% if g.usuario %}
+<header class="topo">
+  <a class="marca" href="{{ url_for('inicio') }}">ClinAgenda</a>
+  <nav>
+    <a href="{{ url_for('consultas') }}">Consultas</a>
+    <a href="{{ url_for('pacientes') }}">Pacientes</a>
+    <a href="{{ url_for('profissionais') }}">Profissionais</a>
+    {% if g.usuario.is_admin() %}<a href="{{ url_for('especialidades') }}">Especialidades</a>{% endif %}
+  </nav>
+  <div class="usuario">{{ g.usuario.nome }} ({{ 'Administrador' if g.usuario.is_admin() else 'Recepção' }})
+    · <a href="{{ url_for('logout') }}">Sair</a></div>
+</header>
+{% endif %}
+<main>
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in msgs %}
+      <div class="aviso {{ cat }}">{{ '✔' if cat == 'ok' else '✖' }} {{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+  {% block conteudo %}{% endblock %}
+</main>
+</body>
+</html>

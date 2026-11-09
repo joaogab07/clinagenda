@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "_tabela_consultas.html" import tabela with context %}
+{% block titulo %}Consultas{% endblock %}
+{% block conteudo %}
+<div class="cabecalho"><h1>Consultas</h1>
+  <a class="btn" href="{{ url_for('consulta_form') }}">+ Agendar consulta</a></div>
+<form class="filtros" method="get">
+  <input type="date" name="data" value="{{ filtro.data }}">
+  <select name="profissional"><option value="">Todos os profissionais</option>
+    {% for p in profissionais %}<option value="{{ p.id }}" {% if filtro.profissional == p.id|string %}selected{% endif %}>{{ p.nome }}</option>{% endfor %}
+  </select>
+  <select name="status"><option value="">Todos os status</option>
+    {% for s in ('agendada', 'realizada', 'cancelada') %}<option value="{{ s }}" {% if filtro.status == s %}selected{% endif %}>{{ s|capitalize }}</option>{% endfor %}
+  </select>
+  <button class="btn secundario">Filtrar</button>
+  <a href="{{ url_for('consultas') }}">Limpar</a>
+</form>
+{{ tabela(consultas) }}
+{% endblock %}
