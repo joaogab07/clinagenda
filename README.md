@@ -3,8 +3,8 @@
 Projeto da disciplina **Projeto de Desenvolvimento de Software I e II** — UniFil.
 
 **Dupla:**
-- Joao Gabriel Ferreira Baptista — RA 000000
-- Jorge Maluf Neto — RA 000000
+- Joao Gabriel Ferreira Baptista — RA 232072019
+- Jorge Maluf Neto — RA 261466541
 
 ## Sobre o sistema
 
