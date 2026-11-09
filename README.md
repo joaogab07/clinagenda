@@ -3,8 +3,8 @@
 Projeto da disciplina **Projeto de Desenvolvimento de Software I e II** — UniFil.
 
 **Dupla:**
-- NOME COMPLETO DO INTEGRANTE 1 — RA 000000
-- NOME COMPLETO DO INTEGRANTE 2 — RA 000000
+- Joao Gabriel Ferreira Baptista — RA 000000
+- Jorge Maluf Neto — RA 000000
 
 ## Sobre o sistema
 
