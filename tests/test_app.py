@@ -35,8 +35,25 @@ def novo_paciente(client, cpf=CPF_OK):
 
 def test_cpf():
     assert cpf_valido(CPF_OK)
-    assert not cpf_valido("111.111.111-11")
-    assert not cpf_valido("123.456.789-00")
+    assert cpf_valido("123.456.789-00")      # qualquer CPF com 11 números é aceito
+    assert cpf_valido("12345678900")
+    assert not cpf_valido("123.456.789")      # faltando números
+    assert not cpf_valido("")
+
+
+def test_cadastro_de_conta(client):
+    dados = {"nome": "Ana Recepção", "login": "ana", "senha": "segredo1", "confirmacao": "segredo1"}
+    r = client.post("/cadastro", data=dados, follow_redirects=True)
+    texto = r.get_data(as_text=True)
+    assert "Conta criada" in texto and "Olá, Ana Recepção" in texto
+    client.get("/logout")
+    assert "já está em uso" in client.post("/cadastro", data=dados, follow_redirects=True).get_data(as_text=True)
+    r = client.post("/cadastro", follow_redirects=True,
+                    data=dict(dados, login="ana2", confirmacao="outra"))
+    assert "não conferem" in r.get_data(as_text=True)
+    # nova conta entra com perfil Recepção (sem acesso à área do admin)
+    entrar(client, "ana", "segredo1")
+    assert client.get("/especialidades").status_code == 403
 
 
 def test_conflito_de_horario():
@@ -55,14 +72,15 @@ def test_crud_paciente(client):
     entrar(client)
     assert "Maria Teste" in novo_paciente(client).get_data(as_text=True)
     assert "Já existe" in novo_paciente(client).get_data(as_text=True)      # CPF único
-    assert "CPF inválido" in novo_paciente(client, "123").get_data(as_text=True)
+    assert "11 números" in novo_paciente(client, "123").get_data(as_text=True)
+    assert "Paciente salvo" in novo_paciente(client, "123.456.789-00").get_data(as_text=True)
     r = client.post("/pacientes/1/editar", follow_redirects=True, data={
         "nome": "Maria Alterada", "cpf": CPF_OK, "data_nascimento": "1990-05-10",
         "telefone": "(43) 99999-1234"})
     assert "Maria Alterada" in r.get_data(as_text=True)
     assert "Maria Alterada" in client.get("/pacientes?q=alter").get_data(as_text=True)
     r = client.post("/pacientes/1/excluir", follow_redirects=True)
-    assert "Nenhum paciente" in r.get_data(as_text=True)
+    assert "Maria Alterada" not in r.get_data(as_text=True)
 
 
 def test_crud_especialidade_e_profissional(client):

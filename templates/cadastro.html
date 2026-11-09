@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block titulo %}Criar conta{% endblock %}
+{% block conteudo %}
+<form class="cartao login" method="post">
+  <h1>Criar conta</h1>
+  <p class="sub">Acesso para a recepção da clínica</p>
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label>Nome completo <input name="nome" value="{{ request.form.nome or '' }}" required autofocus></label>
+  <label>Login <input name="login" value="{{ request.form.login or '' }}" placeholder="ex.: maria.silva" required></label>
+  <label>Senha <input name="senha" type="password" minlength="6" required></label>
+  <label>Confirmar senha <input name="confirmacao" type="password" minlength="6" required></label>
+  <button class="btn">Cadastrar</button>
+  <p class="rodape-form">Já tem conta? <a href="{{ url_for('login') }}">Entrar</a></p>
+</form>
+{% endblock %}

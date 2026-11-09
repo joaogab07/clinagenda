@@ -21,6 +21,7 @@ h2 { margin: 28px 0 12px; font-size: 1.2rem; }
 .login { max-width: 360px; margin: 80px auto; display: grid; gap: 12px; }
 .login h1 { margin: 0; text-align: center; color: var(--primaria); }
 .sub { margin: -8px 0 8px; text-align: center; color: var(--suave); }
+.rodape-form { margin: 4px 0 0; text-align: center; font-size: .9rem; }
 
 .cabecalho { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
 .totais { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }

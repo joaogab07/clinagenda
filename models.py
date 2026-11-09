@@ -12,16 +12,8 @@ def somente_digitos(texto: str) -> str:
 
 
 def cpf_valido(cpf: str) -> bool:
-    """Confere os dois dígitos verificadores do CPF."""
-    n = somente_digitos(cpf)
-    if len(n) != 11 or n == n[0] * 11:
-        return False
-    for tamanho in (9, 10):
-        soma = sum(int(n[i]) * (tamanho + 1 - i) for i in range(tamanho))
-        digito = (soma * 10) % 11 % 10
-        if digito != int(n[tamanho]):
-            return False
-    return True
+    """Aceita o CPF quando ele tem exatamente 11 números (com ou sem pontos e traço)."""
+    return len(somente_digitos(cpf)) == 11
 
 
 def formatar_cpf(cpf: str) -> str:
@@ -41,6 +33,20 @@ class Usuario:
 
     def is_admin(self) -> bool:
         return self.perfil == "admin"
+
+    @staticmethod
+    def validar_cadastro(nome: str, login: str, senha: str, confirmacao: str) -> list:
+        """Regras para criar uma conta nova pela tela de cadastro."""
+        erros = []
+        if len(nome.strip()) < 3:
+            erros.append("Informe seu nome completo.")
+        if not re.fullmatch(r"[a-zA-Z0-9._]{3,30}", login):
+            erros.append("O login deve ter de 3 a 30 caracteres, usando letras, números, ponto ou _.")
+        if len(senha) < 6:
+            erros.append("A senha deve ter pelo menos 6 caracteres.")
+        if senha != confirmacao:
+            erros.append("As senhas não conferem.")
+        return erros
 
 
 @dataclass
@@ -91,7 +97,7 @@ class Paciente:
         if not self.nome.strip():
             erros.append("Informe o nome do paciente.")
         if not cpf_valido(self.cpf):
-            erros.append("CPF inválido.")
+            erros.append("O CPF deve ter 11 números.")
         try:
             nasc = date.fromisoformat(self.data_nascimento)
             if nasc > date.today():

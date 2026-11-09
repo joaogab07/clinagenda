@@ -10,7 +10,7 @@ from functools import wraps
 
 from flask import (Flask, abort, flash, g, redirect, render_template, request,
                    session, url_for)
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 import database
 from database import get_db
@@ -114,6 +114,32 @@ def registrar_rotas(app):
                 return redirect(proximo if proximo.startswith("/") else url_for("inicio"))
             flash("Login ou senha incorretos.", "erro")
         return render_template("login.html")
+
+    @app.route("/cadastro", methods=["GET", "POST"])
+    def cadastro():
+        """Criação de conta: quem se cadastra entra com o perfil Recepção."""
+        if g.usuario:
+            return redirect(url_for("inicio"))
+        if request.method == "POST":
+            nome, login_ = form_str("nome"), form_str("login").lower()
+            senha, confirmacao = request.form.get("senha", ""), request.form.get("confirmacao", "")
+            erros = Usuario.validar_cadastro(nome, login_, senha, confirmacao)
+            if not erros:
+                db = get_db()
+                try:
+                    cur = db.execute("INSERT INTO usuario (nome, login, senha_hash, perfil) "
+                                     "VALUES (?, ?, ?, 'recepcao')",
+                                     (nome, login_, generate_password_hash(senha)))
+                    db.commit()
+                    session.clear()
+                    session["usuario_id"] = cur.lastrowid
+                    flash("Conta criada com sucesso. Bem-vindo(a)!", "ok")
+                    return redirect(url_for("inicio"))
+                except sqlite3.IntegrityError:
+                    erros.append("Este login já está em uso. Escolha outro.")
+            for e in erros:
+                flash(e, "erro")
+        return render_template("cadastro.html")
 
     @app.route("/logout")
     def logout():
